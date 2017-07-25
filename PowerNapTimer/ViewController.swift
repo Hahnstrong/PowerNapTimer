@@ -17,6 +17,9 @@ class ViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        myTimer.delegate = self
+        
         setView()
     }
     
@@ -38,9 +41,44 @@ class ViewController: UIViewController {
         if myTimer.isOn {
             myTimer.stopTimer()
         } else {
-            myTimer.startTimer(20*60.0)
+            myTimer.startTimer(5.0)
         }
         setView()
     }
+    
+    //MARK: - UIAlertController
+    
+    func setupAlertController() {
+        let alert = UIAlertController(title: "Wake Up", message: "Get up ya lazy bum!", preferredStyle: .alert)
+        
+        let dismissAction = UIAlertAction(title: "Dismiss", style: .cancel) { (_) in
+            self.setView()
+        }
+        
+        alert.addAction(dismissAction)
+        
+        present(alert, animated: true, completion: nil)
+    }
 }
 
+
+// MARK: - Timer Delegate
+
+extension ViewController: TimerDelegate {
+    
+    func timerSecondTick() {
+        updateTimerLabel()
+    }
+    
+    func timerCompleted() {
+        setView()
+        // Appear the notification and alertcontroller
+        setupAlertController()
+    }
+    
+    func timerStopped() {
+        setView()
+        // Canel notification
+    }
+    
+}
