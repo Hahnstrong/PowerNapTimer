@@ -35,7 +35,7 @@ class MyTimer: NSObject {
         let secondsLeft = timeRemaining - (minutesLeft*60)
         return String(format: "%02d : %02d", arguments: [minutesLeft, secondsLeft])
     }
-
+    
     fileprivate func secondTick() {
         guard let timeRemaining = timeRemaining else {return}
         if timeRemaining > 0 {
@@ -52,10 +52,12 @@ class MyTimer: NSObject {
     func startTimer(_ time: TimeInterval) {
         if !isOn {
             timeRemaining = time
-            self.secondTick()
-            timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true, block: { (_) in
+            DispatchQueue.main.async {
                 self.secondTick()
-            })
+                self.timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true, block: { (_) in
+                    self.secondTick()
+                })
+            }
         }
     }
     
